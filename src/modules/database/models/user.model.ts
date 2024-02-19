@@ -12,11 +12,11 @@ import { Types } from 'mongoose';
 export class User {
   _id: Types.ObjectId;
 
-  @Prop()
+  @Prop({ required: true })
   full_name: string;
 
   @Prop({ required: true })
-  login: string;
+  email: string;
 
   @Prop({ required: true })
   password: string;
