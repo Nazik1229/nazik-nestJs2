@@ -4,6 +4,7 @@ import { createUserDto } from './dto/create-user.dto';
 import { UserDocument } from '../database/models/user.model';
 import { JwtService } from '@nestjs/jwt';
 import { access } from 'fs';
+import { loginUserDto } from './dto/login-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -22,22 +23,23 @@ export class AuthService {
         }
     }
 
-    async login(userLogin) {
+    async validateUser(login: string, password: string): Promise<any> {
         try {
-           const user = await this.userService.findOneUserByEmail(userLogin.email);
-           if (user) {
-            if (user.password === userLogin.password) {
-                const { email } = userLogin;
-                const payload = { email };
-                return {
-                    access_token: this.jwtService.sign(payload),
-                };
-            }
-           } 
-           return "Неверные данные для входа";
+          const user = await this.userService.findOne({ login, password });
+          if (!user) {
+            return null;
+          }
+          return user;
         } catch (error) {
-            return error.message;
+          return error.data;
         }
-        
+    }
+
+    login(userData: loginUserDto, user: UserDocument) {
+        const { email } = userData;
+        const payload = { email, user_id: user._id };
+        return {
+            access_token: this.jwtService.sign(payload),
+        };
     }
 }
