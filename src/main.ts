@@ -16,6 +16,6 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   await app.listen(3000);
-  console.log(3000);
+  console.log('Сваггер доступен на localhost:3000/api');
 }
 bootstrap();
